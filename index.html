@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>福祉現場向け 支援記録・日報フレーズ作成ツール</title>
   <style>
-    /* 全体デザイン：薄いグリーン・ブルー系の清潔感ある配色 */
     :root {
       --primary-color: #2e7d32;
       --primary-light: #e8f5e9;
@@ -13,6 +12,7 @@
       --text-color: #333333;
       --border-color: #c8e6c9;
       --card-bg: #ffffff;
+      --danger-color: #c62828;
     }
 
     * {
@@ -47,6 +47,53 @@
       border-bottom: 2px solid var(--border-color);
     }
 
+    /* フレーズ追加フォーム */
+    .add-form-section {
+      background-color: #f0f7f1;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 24px;
+    }
+
+    .add-form-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .add-form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    select, input[type="text"] {
+      padding: 10px;
+      font-size: 0.95rem;
+      border: 1px solid #cccccc;
+      border-radius: 6px;
+      background-color: #ffffff;
+    }
+
+    select { width: 200px; }
+    input[type="text"] { flex: 1; }
+
+    .btn-add {
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: var(--primary-color);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-add:hover { background-color: #1b5e20; }
+
+    /* カテゴリセクション */
     .category-section {
       margin-bottom: 24px;
       background-color: #fafafa;
@@ -78,25 +125,20 @@
 
     .phrase-item {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       background: #ffffff;
-      padding: 12px 14px;
+      padding: 10px 14px;
       border: 1px solid #e0e0e0;
       border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s;
+      transition: background-color 0.2s;
     }
 
-    .phrase-item:hover {
-      background-color: var(--primary-light);
-      border-color: var(--primary-color);
-    }
+    .phrase-item:hover { background-color: var(--primary-light); }
 
     .phrase-item input[type="checkbox"] {
       width: 20px;
       height: 20px;
       margin-right: 12px;
-      margin-top: 2px;
       accent-color: var(--primary-color);
       cursor: pointer;
     }
@@ -105,6 +147,22 @@
       font-size: 0.95rem;
       cursor: pointer;
       flex: 1;
+    }
+
+    .btn-delete {
+      background: none;
+      border: none;
+      color: #999999;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 2px 8px;
+      margin-left: 8px;
+      border-radius: 4px;
+    }
+
+    .btn-delete:hover {
+      color: var(--danger-color);
+      background-color: #ffebee;
     }
 
     /* 生成結果エリア */
@@ -162,15 +220,8 @@
       transition: background-color 0.2s, transform 0.1s;
     }
 
-    .btn-copy:hover {
-      background-color: #1b5e20;
-    }
+    .btn-copy:hover { background-color: #1b5e20; }
 
-    .btn-copy:active {
-      transform: translateY(1px);
-    }
-
-    /* クリアボタン（追加） */
     .btn-clear {
       background: none;
       border: none;
@@ -181,9 +232,7 @@
       padding: 5px;
     }
 
-    .btn-clear:hover {
-      color: #d32f2f;
-    }
+    .btn-clear:hover { color: var(--danger-color); }
 
     .toast {
       font-size: 0.95rem;
@@ -194,21 +243,84 @@
       transition: opacity 0.3s ease;
     }
 
-    .toast.show {
-      opacity: 1;
+    .toast.show { opacity: 1; }
+
+    /* 履歴蓄積エリア */
+    .history-section {
+      margin-top: 30px;
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
     }
 
-    /* スマホ向け調整 */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .history-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #555555;
+    }
+
+    .btn-clear-history {
+      font-size: 0.8rem;
+      color: var(--danger-color);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      position: relative;
+    }
+
+    .history-date {
+      font-size: 0.75rem;
+      color: #888888;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .btn-use-history {
+      margin-top: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-use-history:hover {
+      background-color: var(--border-color);
+    }
+
     @media (max-width: 600px) {
-      .container {
-        padding: 15px;
-      }
-      h1 {
-        font-size: 1.25rem;
-      }
-      .phrase-item {
-        padding: 10px;
-      }
+      .container { padding: 15px; }
+      h1 { font-size: 1.25rem; }
+      .add-form-row { flex-direction: column; }
+      select { width: 100%; }
     }
   </style>
 </head>
@@ -217,160 +329,241 @@
   <div class="container">
     <h1>福祉現場向け 支援記録・日報フレーズ作成ツール</h1>
 
-    <!-- カテゴリ1：体調・気分 -->
-    <div class="category-section">
-      <div class="category-title">体調・気分</div>
-      <div class="phrase-list">
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="朝から表情も明るく、体調良好で安定した様子が見られました。">
-          <span class="phrase-text">朝から表情も明るく、体調良好で安定した様子が見られました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="やや疲労感が見られたため、こまめに声をかけて水分補給と休憩を促しました。">
-          <span class="phrase-text">やや疲労感が見られたため、こまめに声をかけて水分補給と休憩を促しました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="気分の波が見られましたが、個別の対話を通じて気持ちを切り替えることができました。">
-          <span class="phrase-text">気分の波が見られましたが、個別の対話を通じて気持ちを切り替えることができました。</span>
-        </label>
+    <!-- 独自フレーズ追加エリア -->
+    <div class="add-form-section">
+      <div class="add-form-title">＋ 自事業所のオリジナルフレーズを追加する</div>
+      <div class="add-form-group">
+        <div class="add-form-row">
+          <select id="categorySelect">
+            <option value="体調・気分">体調・気分</option>
+            <option value="作業・集中力">作業・集中力</option>
+            <option value="対人・コミュニケーション">対人・コミュニケーション</option>
+            <option value="服薬・食事・休憩">服薬・食事・休憩</option>
+            <option value="課題・トラブル・対応">課題・トラブル・対応</option>
+          </select>
+          <input type="text" id="newPhraseInput" placeholder="追加したい文章を入力してください">
+          <button class="btn-add" id="addPhraseBtn">追加保存</button>
+        </div>
       </div>
     </div>
 
-    <!-- カテゴリ2：作業・集中力 -->
-    <div class="category-section">
-      <div class="category-title">作業・集中力</div>
-      <div class="phrase-list">
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="指示内容をしっかり確認し、自分のペースで最後まで集中して取り組めました。">
-          <span class="phrase-text">指示内容をしっかり確認し、自分のペースで最後まで集中して取り組めました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="わからない手順があると自らスタッフに質問し、確認しながら進めることができました。">
-          <span class="phrase-text">わからない手順があると自らスタッフに質問し、確認しながら進めることができました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="途中集中が切れそうになる場面もありましたが、声かけにより最後までやり遂げました。">
-          <span class="phrase-text">途中集中が切れそうになる場面もありましたが、声かけにより最後までやり遂げました。</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- カテゴリ3：対人・コミュニケーション -->
-    <div class="category-section">
-      <div class="category-title">対人・コミュニケーション</div>
-      <div class="phrase-list">
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="周囲の利用者やスタッフに対して丁寧な挨拶ややり取りができていました。">
-          <span class="phrase-text">周囲の利用者やスタッフに対して丁寧な挨拶ややり取りができていました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="グループ作業において、お互いに声を掛け合いながら協力して進めることができました。">
-          <span class="phrase-text">グループ作業において、お互いに声を掛け合いながら協力して進めることができました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="自分の意見や要望を静かな口調で分かりやすく周囲に伝えることができていました。">
-          <span class="phrase-text">自分の意見や要望を静かな口調で分かりやすく周囲に伝えることができていました。</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- カテゴリ4：服薬・食事・休憩 -->
-    <div class="category-section">
-      <div class="category-title">服薬・食事・休憩</div>
-      <div class="phrase-list">
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="昼食・服薬ともに指定の時間通り、スムーズに完了することができました。">
-          <span class="phrase-text">昼食・服薬ともに指定の時間通り、スムーズに完了することができました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="食後は自室・休憩スペースで落ち着いて過ごし、気分転換を図られていました。">
-          <span class="phrase-text">食後は自室・休憩スペースで落ち着いて過ごし、気分転換を図られていました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="食欲・服薬状況に問題はなく、午後の作業に向けてしっかりと休息を取られました。">
-          <span class="phrase-text">食欲・服薬状況に問題はなく、午後の作業に向けてしっかりと休息を取られました。</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- カテゴリ5：課題・トラブル・対応 -->
-    <div class="category-section">
-      <div class="category-title">課題・トラブル・対応</div>
-      <div class="phrase-list">
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="作業中に不安感を訴えられたため、個別に面談を実施して傾聴と安心感の提示を行いました。">
-          <span class="phrase-text">作業中に不安感を訴えられたため、個別に面談を実施して傾聴と安心感の提示を行いました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="指示の認識に若干のズレが生じたため、具体的な手順を再提示し、一緒に確認を行いました。">
-          <span class="phrase-text">指示の認識に若干のズレが生じたため、具体的な手順を再提示し、一緒に確認を行いました。</span>
-        </label>
-        <label class="phrase-item">
-          <input type="checkbox" class="phrase-check" value="対人面での行き違いがありましたが、スタッフが入ることで冷静に気持ちを整理できました。">
-          <span class="phrase-text">対人面での行き違いがありましたが、スタッフが入ることで冷静に気持ちを整理できました。</span>
-        </label>
-      </div>
-    </div>
+    <!-- フレーズ表示エリア -->
+    <div id="categoriesContainer"></div>
 
     <!-- 生成・結果エリア -->
     <div class="result-section">
-      <div class="result-title">作成された文章（編集可能）</div>
-      <textarea id="resultText" placeholder="上のフレーズにチェックを入れると、ここに文章が自動生成されます。"></textarea>
+      <div class="result-title">作成された文章（手入力追記も可能）</div>
+      <textarea id="resultText" placeholder="上のフレーズにチェックを入れるか手入力すると、ここに文章が自動作成されます。"></textarea>
       
       <div class="button-area">
-        <button class="btn-copy" id="copyBtn">文章をコピーする</button>
+        <button class="btn-copy" id="copyBtn">文章をコピーして保存</button>
         <button class="btn-clear" id="clearBtn">選択をすべて外す</button>
-        <div class="toast" id="toast">コピーしました！</div>
+        <div class="toast" id="toast">コピー＆保存しました！</div>
       </div>
+    </div>
+
+    <!-- 過去の作成データ蓄積エリア（追加） -->
+    <div class="history-section">
+      <div class="history-header">
+        <div class="history-title">📜 過去に作成した記録の履歴</div>
+        <button class="btn-clear-history" id="clearHistoryBtn">履歴をすべて消去</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
     </div>
   </div>
 
   <script>
-    const checkboxes = document.querySelectorAll('.phrase-check');
+    const defaultData = {
+      "体調・気分": [
+        "朝から表情も明るく、体調良好で安定した様子が見られました。",
+        "やや疲労感が見られたため、こまめに声をかけて水分補給と休憩を促しました。",
+        "気分の波が見られましたが、個別の対話を通じて気持ちを切り替えることができました。"
+      ],
+      "作業・集中力": [
+        "指示内容をしっかり確認し、自分のペースで最後まで集中して取り組めました。",
+        "わからない手順があると自らスタッフに質問し、確認しながら進めることができました。",
+        "途中集中が切れそうになる場面もありましたが、声かけにより最後までやり遂げました。"
+      ],
+      "対人・コミュニケーション": [
+        "周囲の利用者やスタッフに対して丁寧な挨拶ややり取りができていました。",
+        "グループ作業において、お互いに声を掛け合いながら協力して進めることができました。",
+        "自分の意見や要望を静かな口調で分かりやすく周囲に伝えることができていました。"
+      ],
+      "服薬・食事・休憩": [
+        "昼食・服薬ともに指定の時間通り、スムーズに完了することができました。",
+        "食後は自室・休憩スペースで落ち着いて過ごし、気分転換を図られていました。",
+        "食欲・服薬状況に問題はなく、午後の作業に向けてしっかりと休息を取られました。"
+      ],
+      "課題・トラブル・対応": [
+        "作業中に不安感を訴えられたため、個別に面談を実施して傾聴と安心感の提示を行いました。",
+        "指示の認識に若干のズレが生じたため、具体的な手順を再提示し、一緒に確認を行いました。",
+        "対人面での行き違いがありましたが、スタッフが入ることで冷静に気持ちを整理できました。"
+      ]
+    };
+
+    let phraseData = JSON.parse(localStorage.getItem('welfare_phrases')) || defaultData;
+    let historyData = JSON.parse(localStorage.getItem('welfare_history')) || [];
+
+    const container = document.getElementById('categoriesContainer');
     const resultText = document.getElementById('resultText');
     const copyBtn = document.getElementById('copyBtn');
     const clearBtn = document.getElementById('clearBtn');
     const toast = document.getElementById('toast');
+    const addPhraseBtn = document.getElementById('addPhraseBtn');
+    const categorySelect = document.getElementById('categorySelect');
+    const newPhraseInput = document.getElementById('newPhraseInput');
+    const historyList = document.getElementById('historyList');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
-    // テキスト再生成
-    function updateText() {
-      const selectedPhrases = [];
-      checkboxes.forEach(box => {
-        if (box.checked) {
-          selectedPhrases.push(box.value);
-        }
-      });
-      resultText.value = selectedPhrases.join('\n');
+    function render() {
+      container.innerHTML = '';
+      for (const [category, phrases] of Object.entries(phraseData)) {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.textContent = category;
+        section.appendChild(title);
+
+        const list = document.createElement('div');
+        list.className = 'phrase-list';
+
+        phrases.forEach((phrase, index) => {
+          const item = document.createElement('label');
+          item.className = 'phrase-item';
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'phrase-check';
+          checkbox.value = phrase;
+          checkbox.addEventListener('change', updateText);
+
+          const span = document.createElement('span');
+          span.className = 'phrase-text';
+          span.textContent = phrase;
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn-delete';
+          delBtn.innerHTML = '×';
+          delBtn.title = '削除';
+          delBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            deletePhrase(category, index);
+          });
+
+          item.appendChild(checkbox);
+          item.appendChild(span);
+          item.appendChild(delBtn);
+          list.appendChild(item);
+        });
+
+        section.appendChild(list);
+        container.appendChild(section);
+      }
+      updateText();
+      renderHistory();
     }
 
-    checkboxes.forEach(box => {
-      box.addEventListener('change', updateText);
-    });
-
-    // コピー機能
-    copyBtn.addEventListener('click', () => {
-      if (!resultText.value.trim()) {
-        alert('コピーする文章がありません。フレーズを選択してください。');
+    function renderHistory() {
+      historyList.innerHTML = '';
+      if (historyData.length === 0) {
+        historyList.innerHTML = '<div style="color:#999; font-size:0.85rem;">保存された過去ログはありません。</div>';
         return;
       }
 
-      navigator.clipboard.writeText(resultText.value).then(() => {
+      historyData.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+
+        const date = document.createElement('div');
+        date.className = 'history-date';
+        date.textContent = item.date;
+
+        const content = document.createElement('div');
+        content.textContent = item.text;
+
+        const useBtn = document.createElement('button');
+        useBtn.className = 'btn-use-history';
+        useBtn.textContent = 'この文章を読み込む';
+        useBtn.addEventListener('click', () => {
+          resultText.value = item.text;
+        });
+
+        div.appendChild(date);
+        div.appendChild(content);
+        div.appendChild(useBtn);
+        historyList.appendChild(div);
+      });
+    }
+
+    function saveData() {
+      localStorage.setItem('welfare_phrases', JSON.stringify(phraseData));
+      render();
+    }
+
+    function saveHistory(text) {
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+      historyData.unshift({ date: dateStr, text: text });
+      if (historyData.length > 20) historyData.pop(); // 最新20件まで保存
+      localStorage.setItem('welfare_history', JSON.stringify(historyData));
+      renderHistory();
+    }
+
+    addPhraseBtn.addEventListener('click', () => {
+      const cat = categorySelect.value;
+      const text = newPhraseInput.value.trim();
+      if (!text) return alert('文章を入力してください。');
+      if (!phraseData[cat]) phraseData[cat] = [];
+      phraseData[cat].push(text);
+      newPhraseInput.value = '';
+      saveData();
+    });
+
+    function deletePhrase(category, index) {
+      if (confirm('このフレーズを削除しますか？')) {
+        phraseData[category].splice(index, 1);
+        saveData();
+      }
+    }
+
+    function updateText() {
+      const checkboxes = document.querySelectorAll('.phrase-check');
+      const selected = [];
+      checkboxes.forEach(box => {
+        if (box.checked) selected.push(box.value);
+      });
+      resultText.value = selected.join('\n');
+    }
+
+    copyBtn.addEventListener('click', () => {
+      const text = resultText.value.trim();
+      if (!text) return alert('コピーする文章がありません。');
+
+      navigator.clipboard.writeText(text).then(() => {
+        saveHistory(text); // 履歴へ蓄積
         toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-        }, 2000);
-      }).catch(err => {
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      }).catch(() => {
         alert('コピーに失敗しました。');
       });
     });
 
-    // 選択を一括解除する機能（追加）
     clearBtn.addEventListener('click', () => {
-      checkboxes.forEach(box => {
-        box.checked = false;
-      });
+      document.querySelectorAll('.phrase-check').forEach(box => box.checked = false);
       updateText();
     });
+
+    clearHistoryBtn.addEventListener('click', () => {
+      if (confirm('蓄積された過去ログをすべて消去しますか？')) {
+        historyData = [];
+        localStorage.removeItem('welfare_history');
+        renderHistory();
+      }
+    });
+
+    render();
   </script>
 </body>
 </html>

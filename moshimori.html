@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>業務申し送り・朝礼コメント作成ツール</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 10px; line-height: 1.6; }
+        h1 { font-size: 1.5rem; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 8px; }
+        .section { margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 6px; }
+        .section h2 { font-size: 1.1rem; margin-top: 0; color: #007bff; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; }
+        button { background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        button:hover { background: #e9ecef; }
+        button.active { background: #007bff; color: #fff; border-color: #007bff; }
+        textarea { width: 100%; height: 120px; margin-top: 10px; padding: 10px; box-sizing: border-box; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; }
+        .action-btn { background: #28a745; color: white; border: none; padding: 10px 20px; font-size: 1rem; margin-top: 10px; font-weight: bold; }
+        .action-btn:hover { background: #218838; }
+        .clear-btn { background: #dc3545; color: white; border: none; margin-left: 10px; }
+        .clear-btn:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+
+<h1>業務申し送り・朝礼コメント作成ツール</h1>
+
+<div class="section">
+    <h2>1. 体調・様子（朝礼注意喚起）</h2>
+    <div class="btn-group">
+        <button onclick="addText('【良好】本日も体調良好、元気に登所されています。通常通りの支援で問題ありません。')">良好</button>
+        <button onclick="addText('【やや不調】少し睡眠不足の様子がみられます。無理のないペースで作業を進めていただきます。')">やや不調</button>
+        <button onclick="addText('【要観察】朝からやや緊張気味（またはイライラ気味）です。落ち着ける環境を意識して対応をお願いします。')">要観察</button>
+    </div>
+</div>
+
+<div class="section">
+    <h2>2. 作業・進捗</h2>
+    <div class="btn-group">
+        <button onclick="addText('【順調】集中して作業に取り組めています。本日の目標ペース通り進行中です。')">順調</button>
+        <button onclick="addText('【集中力低下】集中が切れやすい状態です。適宜ショートブレイク（休憩）を挟みながら進めます。')">集中力低下</button>
+        <button onclick="addText('【作業変更】本日は手先の疲労を考慮し、軽作業（または別の工程）へ変更して対応します。')">作業変更</button>
+    </div>
+</div>
+
+<div class="section">
+    <h2>3. 服薬・安全管理</h2>
+    <div class="btn-group">
+        <button onclick="addText('【水分補給】気温（室温）が高いため、定時の水分補給を声をかけて促してください。')">水分補給</button>
+        <button onclick="addText('【服薬確認】昼の服薬指定があります。食後の確認を忘れないよう連携をお願いします。')">服薬確認</button>
+        <button onclick="addText('【転倒・怪我防止】足元がややふらつく場面がありました。移動時の見守りを強化します。')">転倒防止</button>
+    </div>
+</div>
+
+<div class="section">
+    <h2>4. 連絡・申し送り事項</h2>
+    <div class="btn-group">
+        <button onclick="addText('【早退・遅刻】本日はご家族のお迎えのため、14時早退予定です。片付けのタイミングにご配慮ください。')">早退・遅刻</button>
+        <button onclick="addText('【保護者連絡】連絡帳に相談事項の記載がありました。夕方の送迎時にスタッフから回答をお伝えします。')">保護者連絡</button>
+        <button onclick="addText('【見学・実習】本日午後から見学者が入られます。作業室の整理整頓と温かい対応をお願いします。')">見学・実習</button>
+    </div>
+</div>
+
+<div class="section">
+    <h2>生成文面</h2>
+    <textarea id="result" placeholder="ボタンを押すとここに文章が追加されます..."></textarea>
+    <br>
+    <button class="action-btn" onclick="copyText()">文章をコピーする</button>
+    <button class="action-btn clear-btn" onclick="clearText()">リセット</button>
+</div>
+
+<script>
+    function addText(text) {
+        const textarea = document.getElementById('result');
+        if (textarea.value !== '') {
+            textarea.value += '\n' + text;
+        } else {
+            textarea.value = text;
+        }
+    }
+
+    function copyText() {
+        const textarea = document.getElementById('result');
+        textarea.select();
+        document.execCommand('copy');
+        alert('クリップボードにコピーしました！');
+    }
+
+    function clearText() {
+        document.getElementById('result').value = '';
+    }
+</script>
+
+</body>
+</html>
